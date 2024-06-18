@@ -1,0 +1,205 @@
+---
+title: "Assignment 1 - Group 6"
+output:
+  word_document: default
+  pdf_document: default
+---
+```{r echo=TRUE}
+# Q1 - Set working directory and import CSV
+setwd("C:/Users/Lenovo/OneDrive/Desktop")
+dataset <- read.csv("women_clothing_ecommerce_sales.csv", header = TRUE)
+
+
+# Q1 - Print the structure of your dataset
+women_clothing_ecommerce_sales <- read.csv("C:/Users/Lenovo/OneDrive/Desktop/women_clothing_ecommerce_sales.csv")
+
+# View the data frame (optional)
+View(women_clothing_ecommerce_sales)
+
+# Check the data structure
+str(women_clothing_ecommerce_sales)
+
+# Q2 - List variables in dataset
+names(dataset)
+```
+```{r echo=TRUE}
+# Q3 - Print the top 15 rows of the dataset
+head(dataset, 15)
+```
+
+```{r echo=TRUE}
+#Q4 - Write a user defined function using any of the variables from the data set
+# Function to find the most selling color from the dataset
+mostsellingcolor <- function(wc) {
+    # Aggregate total quantity by color
+    colortotals <- aggregate(quantity ~ color, wc, sum)
+    
+    # Find the color with the maximum total quantity sold
+    mostselling <- colortotals[which.max(colortotals$quantity), ]
+    
+    # Return the most selling color
+    return(mostselling)
+}
+
+# Print the most selling color using the created function
+print(mostsellingcolor(dataset))
+```
+
+```{r echo=TRUE}
+#Q5 -  Use Data manipulation techniques and filter rows based on any logical criteria that exist in the data
+library(dplyr)
+
+filtered_dataset <- women_clothing_ecommerce_sales %>% filter(unit_price > 200)
+
+# Print the first 10 rows 
+print(head(filtered_dataset, 10))
+```
+
+```{r echo=TRUE}
+#q6 - Identifying the dependent & independent variables and use reshaping techniques and create a new data frame by joining those variables from your dataset.
+reshaped_women_clothing_ecommerce_sales <- data.frame(
+ID = 1:6,
+unit_price = c(799, 258, 264, 278, 228, 288),
+revenue = c(264, 258, 264, 278, 228, 288)
+)
+library(dplyr)
+##Assuming 'unit_price' is the independent variable and 'revenue' is the dependent variable
+library(tidyr)
+new_df <- reshaped_women_clothing_ecommerce_sales %>%
+select(ID, unit_price, revenue) %>%
+gather(key = "variable", value = "value", -ID)
+print(reshaped_women_clothing_ecommerce_sales)
+```
+
+```{r echo=TRUE}
+#Q7 - Remove missing values in your dataset.
+women_clothing_ecommerce_sales_cleaned <- na.omit(women_clothing_ecommerce_sales)
+print(women_clothing_ecommerce_sales_cleaned)
+```
+
+```{r echo=TRUE}
+#Q8 - Identify and remove duplicated data in your dataset
+duplicated_rows <- women_clothing_ecommerce_sales[duplicated(women_clothing_ecommerce_sales) | duplicated(women_clothing_ecommerce_sales, fromLast = TRUE), ]
+# Print duplicated rows
+print(duplicated_rows)
+```
+
+```{r echo=TRUE}
+# Remove duplicated rows
+women_clothing_ecommerce_sales_nonduplicate <- women_clothing_ecommerce_sales[!duplicated(women_clothing_ecommerce_sales), ]
+# Print the dataset without duplicates
+print(women_clothing_ecommerce_sales_nonduplicate)
+```
+
+```{r echo=TRUE}
+#Q9 - Reorder multiple rows in descending order
+women_clothing_ecommerce_sales_reordered <- women_clothing_ecommerce_sales[order(women_clothing_ecommerce_sales$unit_price), ]
+# Display the modified data frame
+print(women_clothing_ecommerce_sales_reordered)
+```
+
+```{r echo=TRUE}
+#Q10 - Rename some of the column names in your dataset
+data(women_clothing_ecommerce_sales)
+```
+
+```{r echo=TRUE}
+#Display the original column names
+print(names(women_clothing_ecommerce_sales))
+```
+
+```{r echo=TRUE}
+names(women_clothing_ecommerce_sales)[names(women_clothing_ecommerce_sales) == "unit_price"] <- "item_price"
+names(women_clothing_ecommerce_sales)[names(women_clothing_ecommerce_sales) == "revenue"] <- "sales"
+#Display the modified column names
+print(names(women_clothing_ecommerce_sales))
+```
+
+```{r echo=TRUE}
+#Q11 - Add new variables in your data frame by using a mathematical function (for e.g. – multiply an existing column by 2 and add it as a new variable to your data frame)
+women_clothing_ecommerce_sales$Double_item_price <- women_clothing_ecommerce_sales$item_price * 2
+cat("\nDataset with New Variable:\n")
+```
+```{r echo=TRUE}
+print(women_clothing_ecommerce_sales)
+```
+
+```{r echo=TRUE}
+#Q12 - Create a training set using random number generator engine.
+set.seed(123)
+# Number of observations in the dataset
+num_obs <- 50
+# Generate random data for the training set
+training_women_clothing_ecommerce_sales <- data.frame(
+Customer_ID = 1:num_obs,
+Purchase_Amount = runif(num_obs, min = 5, max = 10), # Random purchase amounts between $5 and $10
+Visit_Frequency = sample(1:10, num_obs, replace = TRUE) # Random visit frequency between 1 and 10
+)
+# Display the first few rows of the dataset
+head(training_women_clothing_ecommerce_sales)
+```
+
+```{r echo=TRUE}
+# Save the dataset to a CSV file
+write.csv(training_women_clothing_ecommerce_sales, "women_clothing_ecommerce_sales_training.csv", row.names = FALSE)
+#Display a message indicating successful dataset creation
+cat("Training  'women_clothing_ecommerce_sales' created and saved to 'women_clothing_ecommerce_sales_training.csv'.\n")
+```
+
+```{r echo=TRUE}
+#Q13 - Print the summary statistics of your dataset
+print(summary(women_clothing_ecommerce_sales))
+```
+
+```{r echo=TRUE}
+#Q14 - Use any of the numerical variables from the dataset and perform the following statistical functions
+#Mean
+#Median
+#Mode
+#Range
+# Load necessary libraries
+library(readxl)
+library(ggplot2)
+```
+
+
+```{r echo=TRUE}
+#Mean Unit Price
+mean_unit_price <- mean(dataset$unit_price, na.rm = TRUE)
+print(paste("Mean Unit Price:", mean_unit_price))
+```
+```{r echo=TRUE}
+#Median Unit Price
+median_unit_price <- median(dataset$unit_price, na.rm = TRUE)
+print(paste("Median Unit Price:", median_unit_price))
+```
+```{r echo=TRUE}
+#Range Unit Price
+range_unit_price <- range(dataset$unit_price, na.rm = TRUE)
+range_diff_unit_price <- diff(range_unit_price)
+print(paste("Range Unit Price:", range_diff_unit_price))
+```
+
+```{r echo=TRUE}
+#Q15 - Plot a scatter plot for any 2 variables in your dataset
+ggplot(dataset, aes(x = unit_price, y = revenue)) +
+geom_point() +
+labs(title = "Scatter Plot of Unit Price vs Revenue",
+x = "Unit Price",
+y = "Revenue")
+```
+
+```{r echo=TRUE}
+#Q16 - Plot a bar plot for any 2 variables in your dataset
+ggplot(dataset, aes(x = color, y = quantity)) +
+geom_bar(stat = "identity") +
+labs(title = "Bar Plot of Color vs Quantity",
+x = "Color",
+y = "Quantity")
+```
+
+```{r echo=TRUE}
+#Q17 - Find the correlation between any 2 variables by applying Pearson correlation
+correlation <- cor(dataset$unit_price, dataset$revenue, method = "pearson")
+print(paste("Pearson Correlation between Unit Price and Revenue:", correlation))
+```
